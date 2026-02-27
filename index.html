@@ -1,0 +1,115 @@
+<html>
+<head>
+  <title>browserOS demo</title>
+  <style>
+    body { background: black; color: green; font-family: monospace; }
+    #logo, #terminal { padding: 10px; }
+    #terminal { max-height: 80vh; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <pre id="logo" style="color:green">
+   _                                      ____   _____ 
+  | |                                    / __ \ / ____|
+  | |__  _ __ _____      _____  ___ _ __| |  | | (___  
+  | '_ \| '__/ _ \ \ /\ / / __|/ _ \ '__| |  | |\___ \ 
+  | |_) | | | (_) \ V  V /\__ \  __/ |  | |__| |____) |
+  |_.__/|_|  \___/ \_/\_/ |___/\___|_|   \____/|_____/ 
+                                                      
+  </pre>
+
+  <pre id="terminal" style="color:green;">
+    <p>type "help" for list of commands</p>
+  </pre>
+
+  <div id="editor-container" style="display:none; color:green; font-family:monospace; padding:10px; border:1px solid green; margin:10px; width:90%; height:300px; overflow:auto;">
+    <div id="text-editor" contenteditable="true" style="width:100%; height:90%; outline:none;"></div>
+    <div style="margin-top:5px;">
+      <button onclick="saveText()" style="background:green;color:black;padding:5px;">Save</button>
+      <button onclick="clearText()" style="background:green;color:black;padding:5px;">Clear</button>
+      <button onclick="closeEditor()" style="background:green;color:black;padding:5px;">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const terminal = document.getElementById("terminal");
+    let input = document.createElement("input");
+    input.type = "text";
+    input.id = "cmd";
+    input.style = "background:black; color:green; font-family:monospace; border:none; outline:none; width:100%;";
+
+    let savedText = "";
+
+    function appendPrompt() {
+      const promptLine = document.createElement("div");
+      promptLine.style.color = "green";
+      promptLine.textContent = "@root:~$";
+      terminal.appendChild(promptLine);
+      terminal.appendChild(input);
+      input.value = "";
+      input.focus();
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    input.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        const command = input.value;
+        const output = document.createElement("div");
+        output.style.color = "green";
+        output.textContent = command;
+        terminal.appendChild(output);
+
+        if (command === "minesweeper") {
+          window.location.href = "minesweeper.html";
+        } else if (command === "calc") {
+          window.location.href = "calculater.html";
+        } else if (command === "help") {
+          const help = [
+            "Available commands:",
+            "  minesweeper - Launch the game",
+            "  editor - Open text editor",
+            "  calc - Open calculator",
+            "  help - Show this list"
+          ];
+          help.forEach(line => {
+            const helpLine = document.createElement("div");
+            helpLine.style.color = "green";
+            helpLine.textContent = line;
+            terminal.appendChild(helpLine);
+          });
+          appendPrompt();
+        } else if (command === "editor") {
+          const msg = document.createElement("div");
+          msg.style.color = "green";
+          msg.textContent = "Launching text editor...";
+          terminal.appendChild(msg);
+          document.getElementById("editor-container").style.display = "block";
+          appendPrompt();
+        } else {
+          const err = document.createElement("div");
+          err.style.color = "green";
+          err.textContent = "Command not found.";
+          terminal.appendChild(err);
+          appendPrompt();
+        }
+      }
+    });
+
+    function saveText() {
+      savedText = document.getElementById("text-editor").innerHTML;
+      alert("Text saved!");
+    }
+
+    function clearText() {
+      document.getElementById("text-editor").innerHTML = "";
+    }
+
+    function closeEditor() {
+      document.getElementById("editor-container").style.display = "none";
+      appendPrompt();
+    }
+
+    appendPrompt();
+  </script>
+</body>
+</html>   
